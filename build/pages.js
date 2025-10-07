@@ -6,4 +6,5 @@ import { buildPage } from './build';
 import ErrorPage from '../components/pages/Error';
 
 // 404 page
-buildPage('404', ReactDOMServer.renderToStaticMarkup(<ErrorPage title="404" description="Ooops... the page you are looking for doesn't exist." />));
+buildPage('404', ReactDOMServer.renderToStaticMarkup(<ErrorPage title="404" description="Ooops... the page you are looking for doesn't exist." />))
+    .catch(err => console.error('Error building 404 page:', err));

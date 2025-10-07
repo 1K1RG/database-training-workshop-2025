@@ -53,7 +53,8 @@ fs.readdirSync(__dirname + '/../posts').forEach(filename => {
 // map over posts array and create all the blog post pages
 posts = posts.map(function(post) {
     post.path = `${blogPath}/${post.path}`; // add the blog path
-    buildPage(post.path, ReactDOMServer.renderToStaticMarkup(<Post {...post.data} path={post.path} content={post.content} />));
+    buildPage(post.path, ReactDOMServer.renderToStaticMarkup(<Post {...post.data} path={post.path} content={post.content} />))
+        .catch(err => console.error('Error building post:', post.path, err));
     return { path: post.path, date: post.latestDate, ...post.data }; // don't need the content anymore just the data
 });
 
@@ -86,14 +87,16 @@ const buildListPages = function({category, author, list}) {
     list.map(function(post, i) {
         if (pageList.length === blogPagesLength) {
             // build the page
-            buildPage(getPath(page), ReactDOMServer.renderToStaticMarkup(<List {...getProps(page, pageList)} />));
+            buildPage(getPath(page), ReactDOMServer.renderToStaticMarkup(<List {...getProps(page, pageList)} />))
+                .catch(err => console.error('Error building list page:', getPath(page), err));
             pageList = []; // empty pageList
             page++; // next page number
         }
         pageList.push(post);
     });
     // final page
-    buildPage(getPath(page), ReactDOMServer.renderToStaticMarkup(<List {...getProps(page, pageList)} />));
+    buildPage(getPath(page), ReactDOMServer.renderToStaticMarkup(<List {...getProps(page, pageList)} />))
+        .catch(err => console.error('Error building final list page:', getPath(page), err));
 };
 
 // create blog pages
@@ -143,7 +146,7 @@ for (let authorId in postsByAuthor) {
 let xmlContent = `<?xml version="1.0" encoding="utf-8"?>
 <rss version="2.0">
 <channel>
-    <title>{blogName} RSS Feed</title>
+    <title>${blogName} RSS Feed</title>
     <link>${blogDomain}${blogPath}</link>
     <description>${blogName} rss feed. ${metaDescription || blogDescription}</description>
     ${ posts.slice(0, 20).map(function(post, i) { 
@@ -159,4 +162,5 @@ let xmlContent = `<?xml version="1.0" encoding="utf-8"?>
     }).join("").trimEnd() }
 </channel>
 </rss>`;
-buildPage(`${blogPath}/rss`, xmlContent, 'xml');
+buildPage(`${blogPath}/rss`, xmlContent, 'xml')
+    .catch(err => console.error('Error building RSS feed:', err));

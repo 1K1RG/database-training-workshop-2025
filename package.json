@@ -27,7 +27,7 @@
         "dotenv": "^8.2.0",
         "express": "^4.17.1",
         "gray-matter": "^4.0.3",
-        "html-minifier": "^4.0.0",
+        "html-minifier-terser": "^7.2.0",
         "marked": "^16.4.0",
         "nodemon": "^3.1.10",
         "postcss": "^8.2.6",

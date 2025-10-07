@@ -1,5 +1,5 @@
 const fs = require('fs');
-const minify = require('html-minifier').minify;
+const { minify } = require('html-minifier-terser');
 const React = require('react');
 const ReactDOMServer = require('react-dom/server');
 require("@babel/register");
@@ -39,23 +39,33 @@ minifyOptions = {
 };
 
 // function to build static content
-exports.buildPage = function buildPage(path, content, type = "html") {
+exports.buildPage = async function buildPage(path, content, type = "html") {
     path = path.charAt(0) !== "/" ? "/" + path : path; // add slash if needed
     let filepath = `${distLocation}${path}.${type}`; // the location for the file
     createDirectory(filepath); // create directory if needed
     // add html tag and minify if html
-    content = type === "html" ? '<!DOCTYPE html>\n' + minify(content, minifyOptions) : content;
+    if (type === "html") {
+        try {
+            content = '<!DOCTYPE html>\n' + await minify(content, minifyOptions);
+        } catch (err) {
+            console.error('Minification error:', err);
+            content = '<!DOCTYPE html>\n' + content; // fallback to unminified
+        }
+    }
     // write the static file
-    fs.writeFile(filepath, content, function(err) {
-        if (err) { 
-            console.error(err); 
-            return false 
-        }
-        if (type === "html" && !path.match(/^\/404$|^\/error$/g)) { // exclude these pages from sitemap
-            fs.appendFileSync(distLocation + "/feeds/sitemap.txt", `${blogDomain}${path.replace(/index$/g, "")}` + '\r\n'); // write to sitemap
-        }
-        console.log(`Build of ${path}.${type} successful`);
-        return true;
+    return new Promise((resolve, reject) => {
+        fs.writeFile(filepath, content, function(err) {
+            if (err) { 
+                console.error(err); 
+                reject(err);
+                return;
+            }
+            if (type === "html" && !path.match(/^\/404$|^\/error$/g)) { // exclude these pages from sitemap
+                fs.appendFileSync(distLocation + "/feeds/sitemap.txt", `${blogDomain}${path.replace(/index$/g, "")}` + '\r\n'); // write to sitemap
+            }
+            console.log(`Build of ${path}.${type} successful`);
+            resolve(true);
+        });
     });
 };
 
