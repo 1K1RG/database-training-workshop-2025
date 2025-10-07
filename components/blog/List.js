@@ -13,7 +13,8 @@ import { ArrowLeft, ArrowRight } from '../svg/Icons';
 // to create a link to author page if has a valid author
 export const createAuthorLink = function(authorId) {
     if (authorId && authors[authorId]) {
-        return <span>by <a href={`${blogPath}/author/${authorId}`}>{authors[authorId].name}</a></span>
+        // return <span>By <a href={`${blogPath}/author/${authorId}`}>{authors[authorId].name}</a></span>
+        return <span>By {authors[authorId].name}</span>
     } else {
         return '';
     }
@@ -93,7 +94,7 @@ function List({category, author, posts, page, pages, path, ...props}) {
                                         <h2 className="font-bold text-2xl lg:text-4xl lg:leading-snug group-hover:underline group-focus:underline">{post.title}</h2>
                                         <p className="my-5 prose dark:prose-dark">{post.description}</p>
                                     </a>
-                                    <p className="prose prose-sm dark:prose-dark">Written {createAuthorLink(post.authorId)} {createCategoryLink(post.categoryId)} on {format(post.date, 'MMMM do, yyyy')}</p>
+                                    <p className="prose prose-sm dark:prose-dark">{createAuthorLink(post.authorId)} {createCategoryLink(post.categoryId)} - {format(post.date, 'MMMM do, yyyy')}</p>
                                 </div>
                             );
                         })}
