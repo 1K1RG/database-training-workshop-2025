@@ -1,9 +1,30 @@
 const express = require('express');
+const { spawn } = require('child_process');
 const app = express();
+
+const runBuild = () => {
+    console.log('🏗️  Building static site...\n');
+    
+    const buildProcess = spawn('npm', ['run', 'dev-build'], {
+        stdio: 'inherit',
+        shell: true
+    });
+    
+    buildProcess.on('close', (code) => {
+        if (code === 0) {
+            console.log('\n✅ Build complete! Server ready at http://localhost:' + app.get('port'));
+        } else {
+            console.log('\n❌ Build failed. Please check the errors above.\n');
+        }
+    });
+};
 
 // dev server settings
 if (process.env.NODE_ENV === "development" || process.env.NODE_ENV === "testing") {
     require('dotenv').config();
+    
+    runBuild();
+    
     // for static site
     app.use('/', express.static(process.cwd() + '/dist', {extensions:['html']}));
     // custom 404

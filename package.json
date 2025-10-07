@@ -5,7 +5,7 @@
     "author": "codemzy",
     "license": "MIT",
     "scripts": {
-        "dev": "NODE_ENV=development node server.js",
+        "dev": "NODE_ENV=development nodemon --watch posts --watch components --watch css --watch js --watch settings --ext md,js,css server.js",
         "dev-build": "FULL=true PREVIEW=true npm run build-static && npm run dev-css && npm run build-js",
         "dev-css": "postcss css/*.css --dir dist/css --ext .min.css",
         "dev-static": "PREVIEW=true node build/build.js",
@@ -29,6 +29,7 @@
         "gray-matter": "^4.0.3",
         "html-minifier": "^4.0.0",
         "marked": "^3.0.4",
+        "nodemon": "^3.1.10",
         "postcss": "^8.2.6",
         "postcss-cli": "^8.3.1",
         "postcss-import": "^14.0.0",
