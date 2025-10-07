@@ -12,23 +12,23 @@ export const blogDomain = "https://www.yourdomain.com";
 export const blogPath = "";
 
 // this could be the business, website or the person
-export const blogBy = "Static Blog Inc";
+export const blogBy = "1k1RG Project";
 
 // The name of the blog
-export const blogName = "The Static Blog";
+export const blogName = "1k1RG Database Training Workshop 2025";
 
 // url for a logo (this is used in the article ld json)
 export const blogLogoURL = false;
 
 // Description for visitors to the blog (you can use markup)
-export const blogDescription = "Something about the blog that you are creating, and what you will be writing about. Oh and maybe a [link to your newsletter](/) or something!"
+export const blogDescription = "The ***4-Day Database Training Workshop*** is designed to build technical capacity among researchers and developers for **Activity 5: Implementation of the Philippine Rice Genome Database (PH Rice GDB)** under the **1k1 Rice Genome Project**. This training integrates foundational database concepts, system architectures, and practical data handling workflows relevant to genomic information management."
 
 // Description that will display in search engines (use plain text only)
 // This is optional, but if you used markup in your description, include a plain text description here for SEO
-export const metaDescription = `Learn about ~the topics you cover~ from step-by-step guides, case studies, and examples. See the latest articles from ${blogName}.`;
+export const metaDescription = `The 1k1RG Database Training Workshop is designed to build technical capacity among researchers and developers for Activity 5: Implementation of the Philippine Rice Genome Database (PH Rice GDB) under the 1k1 Rice Genome Project. This training integrates foundational database concepts, system architectures, and practical data handling workflows relevant to genomic information management.`;
 
 // The number of posts per page (e.g. on the blog and category pages)
-export const blogPagesLength = 20;
+export const blogPagesLength = 10;
 
 // The main twitter handle for the blog site (used for attribution in social sharing) e.g. @yourtwitter
 export const blogTwitter = "";
