@@ -84,8 +84,8 @@ function List({category, author, posts, page, pages, path, ...props}) {
                         </Markdown>
                     </div>
                 </div>
-                <div className="m-5 flex-grow max-w-screen-lg lg:mx-auto lg:flex lg:flex-wrap">
-                    <div className="lg:pr-20 lg:w-2/3">
+                <div className={`m-5 flex-grow max-w-screen-lg lg:mx-auto lg:flex lg:flex-wrap ${Object.keys(categories).length > 0 ? '' : 'justify-center'}`}>
+                    <div className={`lg:w-2/3 ${Object.keys(categories).length > 0 ? 'lg:pr-20' : 'lg:pr-0'}`}>
                         {posts.map(function(post) {
                             return (
                                 <div className="my-20" key={post.path}>
@@ -99,6 +99,7 @@ function List({category, author, posts, page, pages, path, ...props}) {
                         })}
                     </div>
                     <div className="w-full my-5 lg:order-last lg:mt-auto"><Pager page={page} pages={pages} path={path} /></div>
+                    {Object.keys(categories).length > 0 &&
                     <div className="lg:w-1/3 lg:p-5">
                         <div className="my-16">
                             <h3 className="uppercase text-sm font-bold py-2 text-gray-500"><a href={blogPath || "/"}>Categories</a></h3>
@@ -109,6 +110,7 @@ function List({category, author, posts, page, pages, path, ...props}) {
                             </ul>
                         </div>
                     </div>
+                    }
                 </div>
             </div>
         </Main>
