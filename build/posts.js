@@ -58,9 +58,9 @@ posts = posts.map(function(post) {
     return { path: post.path, date: post.latestDate, ...post.data }; // don't need the content anymore just the data
 });
 
-// sort the posts array in date order
+// sort the posts array in date order (oldest first)
 posts = posts.sort(function(a, b) {
-    return isBefore(b.date, a.date) ? -1 : isBefore(a.date, b.date) ? 1 : 0;
+    return isBefore(a.date, b.date) ? -1 : isBefore(b.date, a.date) ? 1 : 0;
 });
 
 // create list pages

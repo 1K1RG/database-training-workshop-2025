@@ -9,8 +9,8 @@
 // if the blog doesn't need authors, empty the authors object e.g const authors = {};
 
 const authors = {
-  g: { name: "G" },
   arian: { name: "Arian Jacildo" },
+  g: { name: "Garth Hendrich Lapitan" },
   riza: { name: "Riza May Pasco" },
   dags: { name: "Lord Hendrix Barboza" },
 };
