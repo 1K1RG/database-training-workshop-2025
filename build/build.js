@@ -1,4 +1,5 @@
 const fs = require('fs');
+const path = require('path');
 const { minify } = require('html-minifier-terser');
 const React = require('react');
 const ReactDOMServer = require('react-dom/server');
@@ -29,6 +30,30 @@ createDirectory(distLocation + '/feeds');
 
 // create an empty file for the site map
 fs.writeFileSync(distLocation + "/feeds/sitemap.txt", "");
+
+const copyPublicFiles = function () {
+  const publicDir = path.join(__dirname, "../public");
+  createDirectory(distLocation + "/public");
+
+  const copyRecursive = (src, dest) => {
+    const stats = fs.statSync(src);
+    if (stats.isDirectory()) {
+      createDirectory(dest);
+
+      const files = fs.readdirSync(src);
+      files.forEach((file) => {
+        copyRecursive(path.join(src, file), path.join(dest, file));
+      });
+    } else {
+      fs.copyFileSync(src, dest);
+    }
+  };
+
+  copyRecursive(publicDir, distLocation + "/public");
+  console.log("Public files copied to dist/public");
+};
+
+copyPublicFiles();
 
 // for minifying html
 minifyOptions = {
