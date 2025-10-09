@@ -7,7 +7,7 @@ import React from 'react';
 import ReactDOMServer from 'react-dom/server';
 import { buildPage } from './build';
 // settings
-import { blogDomain, blogPath, blogName, blogDescription, metaDescription, blogPagesLength } from '../settings/blog';
+import { blogDomain, blogPath, buildPath, blogName, blogDescription, metaDescription, blogPagesLength } from '../settings/blog';
 import categories from '../settings/categories';
 import authors from '../settings/authors';
 
@@ -55,8 +55,9 @@ return posts;
 const buildPosts = function(posts, { includeInListings } = { includeInListings: true }) {
 // map over posts array and create all the blog post pages
 const processedPosts = posts.map(function(post) {
-    post.path = `${blogPath}/${post.path}`; // add the blog path
-    buildPage(post.path, ReactDOMServer.renderToStaticMarkup(<Post {...post.data} path={post.path} content={post.content} />))
+    post.path = `${blogPath}/${post.path}`; // add the blog path for URLs
+    const filePath = `${buildPath}/${post.path.replace(blogPath + '/', '')}`; 
+    buildPage(filePath, ReactDOMServer.renderToStaticMarkup(<Post {...post.data} path={post.path} content={post.content} />))
         .catch(err => console.error('Error building post:', post.path, err));
     return { path: post.path, date: post.latestDate, ...post.data }; // don't need the content anymore just the data
 });
@@ -81,6 +82,9 @@ const buildListPages = function({category, author, list}) {
     let getPath = function(page) {
         return `${blogPath}/${category ? `${category}/` : author ? `author/${author}/` : ''}` + `${page > 1 ? "page/" : ''}` + `${page === 1 ? "index" : page}`
     };
+    let getBuildPath = function(page) {
+        return `${buildPath}/${category ? `${category}/` : author ? `author/${author}/` : ''}` + `${page > 1 ? "page/" : ''}` + `${page === 1 ? "index" : page}`
+    };
     let getProps = function(currentPage, list) {
         return {
             category: category,
@@ -97,7 +101,7 @@ const buildListPages = function({category, author, list}) {
     list.map(function(post, i) {
         if (pageList.length === blogPagesLength) {
             // build the page
-            buildPage(getPath(page), ReactDOMServer.renderToStaticMarkup(<List {...getProps(page, pageList)} />))
+            buildPage(getBuildPath(page), ReactDOMServer.renderToStaticMarkup(<List {...getProps(page, pageList)} />))
                 .catch(err => console.error('Error building list page:', getPath(page), err));
             pageList = []; // empty pageList
             page++; // next page number
@@ -105,7 +109,7 @@ const buildListPages = function({category, author, list}) {
         pageList.push(post);
     });
     // final page
-    buildPage(getPath(page), ReactDOMServer.renderToStaticMarkup(<List {...getProps(page, pageList)} />))
+    buildPage(getBuildPath(page), ReactDOMServer.renderToStaticMarkup(<List {...getProps(page, pageList)} />))
         .catch(err => console.error('Error building final list page:', getPath(page), err));
 };
 
@@ -174,5 +178,5 @@ let xmlContent = `<?xml version="1.0" encoding="utf-8"?>
     }).join("").trimEnd() }
 </channel>
 </rss>`;
-buildPage(`${blogPath}/rss`, xmlContent, 'xml')
+buildPage(`${buildPath}/rss`, xmlContent, 'xml')
     .catch(err => console.error('Error building RSS feed:', err));

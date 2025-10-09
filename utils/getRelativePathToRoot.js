@@ -1,13 +1,10 @@
-export const getRelativePathToRoot = (urlPath) => {
-    if (!urlPath) return '../'; // default for files in blogPath directory
-    
-    const pathParts = urlPath.replace(/^\//, '').split('/');
-    let directoryDepth = pathParts.length - 1;
+import { buildPath } from '../settings/blog.js';
 
-    // 'index' doesn't add depth
-    if (pathParts[pathParts.length - 1] === 'index') {
-        directoryDepth = pathParts.length - 1;
-    }
+export const getRelativePathToRoot = () => {
+    if (!buildPath) return './'; // default for files in the root
+    
+    const pathParts = buildPath.replace(/^\//, '').replace(/\/$/, '').split('/');
+    const directoryDepth = pathParts.filter(part => part).length;
     
     return '../'.repeat(directoryDepth);
 };

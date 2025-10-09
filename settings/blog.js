@@ -9,7 +9,11 @@ export const blogDomain = "https://1k1rg.github.io";
 // but if your whole site is a blog primarily you might want to leave this as "" and have the index page as the blog landing page
 // post urls will be www.theblogsite.com/post-name or if you are hosting on subdomain like blog.yoursite.com/post-name
 // if you do use "/blog" make sure you create a custom index page and wire it up in build/pages
-export const blogPath = "/database-training-workshop-2025";
+export const blogPath = process.env.NODE_ENV === "development" ? "" : "/database-training-workshop-2025";
+// For GitHub Pages deployment, we need the repository path in URLs but not in build paths
+
+// buildPath is different to blogPath if you are hosting the blog GitHub Pages since GitHub Pages hosts the site on a subdirectory the same as the repository name
+export const buildPath = "";
 
 // this could be the business, website or the person
 export const blogBy = "1k1RG Project";
