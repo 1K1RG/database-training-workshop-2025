@@ -1,5 +1,6 @@
 import React from 'react';
 import { blogBy } from '../settings/blog';
+import { getRelativePathToRoot } from '../utils/getRelativePathToRoot';
 // svg
 import { Sun, Moon } from './svg/Icons';
 
@@ -14,10 +15,12 @@ function DarkModeBtn() {
 }
 
 // nav component
-function Nav() {
+function Nav({ path }) {
+    const homeLink = getRelativePathToRoot(path);
+    
     return (
         <nav className="flex items-center flex-wrap p-5">
-            <a href="/" className="font-bold mr-5 text-2xl inline-flex items-center uppercase">
+            <a href={homeLink} className="font-bold mr-5 text-2xl inline-flex items-center uppercase">
                 { blogBy }
             </a>
             <div className="ml-auto"><div className="relative inline-block"><DarkModeBtn /></div></div>

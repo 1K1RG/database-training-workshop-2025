@@ -1,7 +1,7 @@
 // this is the root domain or subdomain that the live blog will be hosted on
 // this info is needed for the LD-JSON post data and the RSS feed
 // e.g. "https://www.yourdomain.com" or "https://blog.yourdomain.com"
-export const blogDomain = "https://www.yourdomain.com";
+export const blogDomain = "https://1k1rg.github.io";
 
 // blog location - use "" for no subdirectory or "/blog" for blog subdirectory
 // personally I prefer to use the "/blog" subdirectory so that I can have other stuff on the site
@@ -9,7 +9,7 @@ export const blogDomain = "https://www.yourdomain.com";
 // but if your whole site is a blog primarily you might want to leave this as "" and have the index page as the blog landing page
 // post urls will be www.theblogsite.com/post-name or if you are hosting on subdomain like blog.yoursite.com/post-name
 // if you do use "/blog" make sure you create a custom index page and wire it up in build/pages
-export const blogPath = "";
+export const blogPath = "/database-training-workshop-2025";
 
 // this could be the business, website or the person
 export const blogBy = "1k1RG Project";

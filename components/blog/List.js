@@ -72,7 +72,7 @@ function Pager({page, pages, path}) {
 function List({category, author, posts, page, pages, path, ...props}) {
 
     return (
-        <Main {...props}>
+        <Main {...props} path={path}>
             <div className="flex flex-col flex-grow">
                 <div className="p-5">
                     <div className="max-w-3xl mx-auto text-center mt-10 py-10">

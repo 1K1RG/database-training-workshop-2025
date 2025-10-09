@@ -1,5 +1,6 @@
 import React from 'react';
 import format from 'date-fns/format';
+import { getRelativePathToRoot } from '../../utils/getRelativePathToRoot';
 // settings
 import { blogPath, defaultSocialImage } from '../../settings/blog';
 import categories from '../../settings/categories';
@@ -14,9 +15,10 @@ import { ChevronRight } from '../svg/Icons';
 
 // blog post component
 function Post(props) {
+    const relativePath = getRelativePathToRoot(props.path);
 
     return (
-        <Main {...props} image={props.image || defaultSocialImage} head={<React.Fragment><link href="/css/prism.min.css" rel="stylesheet" /><PostData {...props} /></React.Fragment>}>
+        <Main {...props} image={props.image || defaultSocialImage} head={<React.Fragment><link href={`${relativePath}css/prism.min.css`} rel="stylesheet" /><PostData {...props} /></React.Fragment>}>
             <div className="p-5">
                 <div className="max-w-3xl mx-auto my-10">
                     <p className="py-5 flex items-center font-semibold text-lg md:text-xl">
