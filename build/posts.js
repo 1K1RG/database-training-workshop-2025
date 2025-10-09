@@ -15,7 +15,7 @@ import authors from '../settings/authors';
 import Post from '../components/blog/Post';
 import List from '../components/blog/List';
 
-const processPosts = function(postsDirectory) {
+const processPosts = function(postsDirectory, { isListed = true } = {}) {
 let posts = [];
 
 fs.readdirSync(postsDirectory).forEach(filename => {
@@ -30,7 +30,7 @@ fs.readdirSync(postsDirectory).forEach(filename => {
         console.error(`The blog post file ${filename} is the wrong format use YYYY-MM-DD_the-blog-path.md`);
     } else if (!isSameDay(new Date(date), latestDate )) { // check the dates match
         console.error(`The filename date for ${filename} is incorrect, must be the same day as the ${data.updated ? "updated" : "published"} date.`)
-    } else if (isBefore(latestDate, new Date()) || process.env.PREVIEW) { // if the post is ready to be published
+    } else if (!isListed || isBefore(latestDate, new Date()) || process.env.PREVIEW) { // if the post is ready to be published (unlisted posts bypass date check)
         // check if the post is already in the array
         let discard = false; // if newer version exists we will discard this post
         posts = posts.filter(function(post) {
@@ -52,7 +52,7 @@ fs.readdirSync(postsDirectory).forEach(filename => {
 return posts;
 };
 
-const buildPosts = function(posts, { includeInListings } = { includeInListings: true }) {
+const buildPosts = function(posts) {
 // map over posts array and create all the blog post pages
 const processedPosts = posts.map(function(post) {
     post.path = `${blogPath}/${post.path}`; // add the blog path for URLs
@@ -63,16 +63,14 @@ const processedPosts = posts.map(function(post) {
 });
 
 // sort the posts array in date order (oldest first)
-if (includeInListings) {
 return processedPosts.sort(function(a, b) {
     return isBefore(a.date, b.date) ? -1 : isBefore(b.date, a.date) ? 1 : 0;
 });
-}
 
 return processedPosts;
 };
 
-const posts = buildPosts(processPosts(__dirname + '/../posts', 'blog post'));
+const posts = buildPosts(processPosts(__dirname + '/../posts'));
 
 // create list pages
 const buildListPages = function({category, author, list}) {
@@ -156,7 +154,7 @@ for (let authorId in postsByAuthor) {
     }
 };
 
-buildPosts(processPosts(__dirname + '/../unlistedPosts', 'unlisted post'), { includeInListings: false });
+buildPosts(processPosts(__dirname + '/../unlistedPosts', { isListed: false }));
 
 // create RSS feed of 20 most recent posts
 let xmlContent = `<?xml version="1.0" encoding="utf-8"?>
