@@ -10,7 +10,7 @@
 
 const authors = {
   arian: { name: "Arian Jacildo" },
-  g: { name: "Garth Hendrich Lapitan" },
+  g: { name: "G" },
   riza: { name: "Riza May Pasco" },
   dags: { name: "Lord Hendrix Barboza" },
 };

@@ -15,12 +15,11 @@ import authors from '../settings/authors';
 import Post from '../components/blog/Post';
 import List from '../components/blog/List';
 
-// for storing a list of all the blog posts
+const processPosts = function(postsDirectory) {
 let posts = [];
 
-// fetch all the blog posts
-fs.readdirSync(__dirname + '/../posts').forEach(filename => {
-    const blogContent = fs.readFileSync(`${__dirname + '/../posts'}/${filename}`, "utf8");
+fs.readdirSync(postsDirectory).forEach(filename => {
+    const blogContent = fs.readFileSync(`${postsDirectory}/${filename}`, "utf8");
     const {data, content} = matter(blogContent);
     const [date, path, ext] = filename.split(/[_.]/);
     data.published = new Date(data.published);
@@ -50,8 +49,12 @@ fs.readdirSync(__dirname + '/../posts').forEach(filename => {
     }
 });
 
+return posts;
+};
+
+const buildPosts = function(posts, { includeInListings } = { includeInListings: true }) {
 // map over posts array and create all the blog post pages
-posts = posts.map(function(post) {
+const processedPosts = posts.map(function(post) {
     post.path = `${blogPath}/${post.path}`; // add the blog path
     buildPage(post.path, ReactDOMServer.renderToStaticMarkup(<Post {...post.data} path={post.path} content={post.content} />))
         .catch(err => console.error('Error building post:', post.path, err));
@@ -59,9 +62,16 @@ posts = posts.map(function(post) {
 });
 
 // sort the posts array in date order (oldest first)
-posts = posts.sort(function(a, b) {
+if (includeInListings) {
+return processedPosts.sort(function(a, b) {
     return isBefore(a.date, b.date) ? -1 : isBefore(b.date, a.date) ? 1 : 0;
 });
+}
+
+return processedPosts;
+};
+
+const posts = buildPosts(processPosts(__dirname + '/../posts', 'blog post'));
 
 // create list pages
 const buildListPages = function({category, author, list}) {
@@ -141,6 +151,8 @@ for (let authorId in postsByAuthor) {
         console.warn(`The author ${authorId} hasn't been added the author settings, but has been added to a post. See settings/authors.`)
     }
 };
+
+buildPosts(processPosts(__dirname + '/../unlistedPosts', 'unlisted post'), { includeInListings: false });
 
 // create RSS feed of 20 most recent posts
 let xmlContent = `<?xml version="1.0" encoding="utf-8"?>
