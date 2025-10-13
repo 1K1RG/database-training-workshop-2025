@@ -19,7 +19,7 @@ function Main({ title, description, ...props }) {
                 <link href={`${relativePath}css/styles.min.css`} rel="stylesheet" />
                 <link rel="preconnect" href="https://fonts.gstatic.com" />
                 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet" />
-                <link rel='shortcut icon' type='image/x-icon' href={`${relativePath}favicon.ico`} />
+                <link rel='shortcut icon' type='image/x-icon' href={`${relativePath}/public/assets/favicon.ico`} />
                 <script src={`${relativePath}js/darkmode.min.js`}></script>
                 { props.path && <link rel="canonical" href={blogDomain + props.path} /> }
                 { props.image ? <meta name="twitter:card" content="summary_large_image" /> : <meta name="twitter:card" content="summary" /> }
