@@ -33,10 +33,12 @@ module.exports = {
                             paddingTop: '.5rem',
                             paddingBottom: '.5rem',
                             position: 'relative',
-                            marginLeft: '1.25rem',
                             fontFamily: 'Georgia,Times New Roman,Times,serif',
                         },
-                        'blockquote::before': {
+                        'blockquote.with-caption':{
+                            marginLeft: '1.25rem',
+                        },
+                        'blockquote.with-caption::before': {
                             position: 'absolute',
                             marginTop: '-20px',
                             marginLeft: '-50px',

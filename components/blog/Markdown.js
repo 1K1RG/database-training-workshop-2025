@@ -10,7 +10,7 @@ const renderer = {
             const caption = match.groups.caption.trim();
             const cite = match.groups.cite?.trim();
             
-            return `<figure><blockquote><p>${quoteText}</p></blockquote><figcaption>- ${caption}${cite ? ` <cite>${cite}</cite>` : ''}</figcaption></figure>`;
+            return `<figure><blockquote class="with-caption"><p>${quoteText}</p></blockquote><figcaption>- ${caption}${cite ? ` <cite>${cite}</cite>` : ''}</figcaption></figure>`;
         }
         return false; // return default if no caption
     },
