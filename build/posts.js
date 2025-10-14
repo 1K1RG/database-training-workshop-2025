@@ -15,7 +15,7 @@ import authors from '../settings/authors';
 import Post from '../components/blog/Post';
 import List from '../components/blog/List';
 
-const processPosts = function(postsDirectory, { isListed = true } = {}) {
+const processPosts = function(postsDirectory, { isListed = true, filterByDate = false } = {}) {
 let posts = [];
 
 fs.readdirSync(postsDirectory).forEach(filename => {
@@ -30,7 +30,7 @@ fs.readdirSync(postsDirectory).forEach(filename => {
         console.error(`The blog post file ${filename} is the wrong format use YYYY-MM-DD_the-blog-path.md`);
     } else if (!isSameDay(new Date(date), latestDate )) { // check the dates match
         console.error(`The filename date for ${filename} is incorrect, must be the same day as the ${data.updated ? "updated" : "published"} date.`)
-    } else if (!isListed || isBefore(latestDate, new Date()) || process.env.PREVIEW) { // if the post is ready to be published (unlisted posts bypass date check)
+    } else if (!isListed || !filterByDate || isBefore(latestDate, new Date()) || process.env.PREVIEW) { // if the post is ready to be published (unlisted posts bypass date check)
         // check if the post is already in the array
         let discard = false; // if newer version exists we will discard this post
         posts = posts.filter(function(post) {
@@ -70,7 +70,11 @@ return processedPosts.sort(function(a, b) {
 return processedPosts;
 };
 
-const posts = buildPosts(processPosts(__dirname + '/../posts'));
+// Build all posts to make them accessible.
+// But posts to be published at a later date are not listed in main page.
+buildPosts(processPosts(__dirname + '/../posts'));
+
+const publishedPosts = buildPosts(processPosts(__dirname + '/../posts', { filterByDate: true }));
 
 // create list pages
 const buildListPages = function({category, author, list}) {
@@ -112,10 +116,10 @@ const buildListPages = function({category, author, list}) {
 };
 
 // create blog pages
-buildListPages({ list: posts });
+buildListPages({ list: publishedPosts });
 
 // posts sorted by category
-let postsByCategory = posts.reduce(function(acc, post) {
+let postsByCategory = publishedPosts.reduce(function(acc, post) {
     let key = post.categoryId;
     if (!acc[key]) {
         acc[key] = []; // create the key if it doesn't exist
@@ -134,7 +138,7 @@ for (let categoryId in postsByCategory) {
 };
 
 // posts sorted by author
-let postsByAuthor = posts.reduce(function(acc, post) {
+let postsByAuthor = publishedPosts.reduce(function(acc, post) {
     let key = post.authorId;
     if (key) {
         if (!acc[key]) {
@@ -163,7 +167,7 @@ let xmlContent = `<?xml version="1.0" encoding="utf-8"?>
     <title>${blogName} RSS Feed</title>
     <link>${blogDomain}${blogPath}</link>
     <description>${blogName} rss feed. ${metaDescription || blogDescription}</description>
-    ${ posts.slice(0, 20).map(function(post, i) { 
+    ${ publishedPosts.slice(0, 20).map(function(post, i) { 
     return (
     `<item>
         <title>${post.title}</title>
