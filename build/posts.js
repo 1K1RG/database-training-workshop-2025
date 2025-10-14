@@ -15,7 +15,7 @@ import authors from '../settings/authors';
 import Post from '../components/blog/Post';
 import List from '../components/blog/List';
 
-const processPosts = function(postsDirectory, { isListed = true, filterByDate = false } = {}) {
+const processPosts = function(postsDirectory) {
 let posts = [];
 
 fs.readdirSync(postsDirectory).forEach(filename => {
@@ -30,7 +30,7 @@ fs.readdirSync(postsDirectory).forEach(filename => {
         console.error(`The blog post file ${filename} is the wrong format use YYYY-MM-DD_the-blog-path.md`);
     } else if (!isSameDay(new Date(date), latestDate )) { // check the dates match
         console.error(`The filename date for ${filename} is incorrect, must be the same day as the ${data.updated ? "updated" : "published"} date.`)
-    } else if (!isListed || !filterByDate || isBefore(latestDate, new Date()) || process.env.PREVIEW) { // if the post is ready to be published (unlisted posts bypass date check)
+    } else {
         // check if the post is already in the array
         let discard = false; // if newer version exists we will discard this post
         posts = posts.filter(function(post) {
@@ -63,18 +63,12 @@ const processedPosts = posts.map(function(post) {
 });
 
 // sort the posts array in date order (oldest first)
-return processedPosts.sort(function(a, b) {
+processedPosts.sort(function(a, b) {
     return isBefore(a.date, b.date) ? -1 : isBefore(b.date, a.date) ? 1 : 0;
 });
 
 return processedPosts;
 };
-
-// Build all posts to make them accessible.
-// But posts to be published at a later date are not listed in main page.
-buildPosts(processPosts(__dirname + '/../posts'));
-
-const publishedPosts = buildPosts(processPosts(__dirname + '/../posts', { filterByDate: true }));
 
 // create list pages
 const buildListPages = function({category, author, list}) {
@@ -115,11 +109,14 @@ const buildListPages = function({category, author, list}) {
         .catch(err => console.error('Error building final list page:', getPath(page), err));
 };
 
+// Build all posts to make them accessible.
+const allPosts = buildPosts(processPosts(__dirname + '/../posts'));
+
 // create blog pages
-buildListPages({ list: publishedPosts });
+buildListPages({ list: allPosts });
 
 // posts sorted by category
-let postsByCategory = publishedPosts.reduce(function(acc, post) {
+let postsByCategory = allPosts.reduce(function(acc, post) {
     let key = post.categoryId;
     if (!acc[key]) {
         acc[key] = []; // create the key if it doesn't exist
@@ -138,7 +135,7 @@ for (let categoryId in postsByCategory) {
 };
 
 // posts sorted by author
-let postsByAuthor = publishedPosts.reduce(function(acc, post) {
+let postsByAuthor = allPosts.reduce(function(acc, post) {
     let key = post.authorId;
     if (key) {
         if (!acc[key]) {
@@ -158,16 +155,16 @@ for (let authorId in postsByAuthor) {
     }
 };
 
-buildPosts(processPosts(__dirname + '/../unlistedPosts', { isListed: false }));
+buildPosts(processPosts(__dirname + '/../unlistedPosts'));
 
-// create RSS feed of 20 most recent posts
+// create RSS feed of 20 most recent posts (including future posts)
 let xmlContent = `<?xml version="1.0" encoding="utf-8"?>
 <rss version="2.0">
 <channel>
     <title>${blogName} RSS Feed</title>
     <link>${blogDomain}${blogPath}</link>
     <description>${blogName} rss feed. ${metaDescription || blogDescription}</description>
-    ${ publishedPosts.slice(0, 20).map(function(post, i) { 
+    ${ allPosts.slice(0, 20).map(function(post, i) { 
     return (
     `<item>
         <title>${post.title}</title>

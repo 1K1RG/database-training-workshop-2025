@@ -1,5 +1,6 @@
 import React from 'react';
 import format from 'date-fns/format';
+import isBefore from 'date-fns/isBefore';
 // settings
 import {blogPath, blogName, blogDescription} from '../../settings/blog';
 import categories from '../../settings/categories';
@@ -70,6 +71,9 @@ function Pager({page, pages, path}) {
 
 // blog list page component
 function List({category, author, posts, page, pages, path, ...props}) {
+    const publishedPosts = posts.filter((post) =>
+      isBefore(post.date, new Date())
+    );
 
     return (
         <Main {...props} path={path}>
@@ -87,7 +91,7 @@ function List({category, author, posts, page, pages, path, ...props}) {
                 </div>
                 <div className={`m-5 flex-grow max-w-screen-lg lg:mx-auto lg:flex lg:flex-wrap ${Object.keys(categories).length > 0 ? '' : 'justify-center'}`}>
                     <div className={`lg:w-2/3 ${Object.keys(categories).length > 0 ? 'lg:pr-20' : 'lg:pr-0'}`}>
-                        {posts.map(function(post) {
+                        {publishedPosts.map(function(post) {
                             return (
                                 <div className="my-20" key={post.path}>
                                     <a href={`${post.path}`} className="group focus:outline-none">
